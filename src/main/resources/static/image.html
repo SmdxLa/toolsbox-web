@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SauceNAO Image Search</title>
+  <!-- 引入Bootstrap CSS -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+  <h1>SauceNAO Image Search</h1>
+  <form id="imageSearchForm">
+    <!-- 选择图像文件 -->
+    <div class="form-group">
+      <label for="imageFile">选择图像文件：</label>
+      <input type="file" class="form-control-file" id="imageFile" accept="image/*">
+    </div>
+    <!-- 输入图像URL -->
+    <div class="form-group">
+      <label for="imageUrl">或输入图像URL：</label>
+      <input type="text" class="form-control" id="imageUrl">
+    </div>
+    <!-- 提交按钮 -->
+    <button type="submit" class="btn btn-primary">搜索</button>
+  </form>
+  <!-- 显示用户输入的参数 -->
+  <div class="mt-4">
+    <h3>用户输入的参数：</h3>
+    <p>图像URL： <span id="userImageUrl"></span></p>
+    <p>上传的图像文件： <span id="userImageFile"></span></p>
+  </div>
+  <!-- 显示搜索结果 -->
+  <div class="mt-4">
+    <h3>搜索结果：</h3>
+    <div id="resultsContainer"></div>
+  </div>
+</div>
+
+<!-- 引入Bootstrap和jQuery JavaScript -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+  // 监听表单提交事件
+  document.getElementById('imageSearchForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // 阻止默认表单提交行为
+
+    // 获取用户输入的图像URL或上传的图像文件
+    const imageUrl = document.getElementById('imageUrl').value;
+    const imageFile = document.getElementById('imageFile').files[0];
+
+    // 显示用户输入的参数
+    document.getElementById('userImageUrl').textContent = imageUrl;
+    document.getElementById('userImageFile').textContent = imageFile ? imageFile.name : '未上传';
+
+    // 根据用户的输入选择不同的处理方式
+    if (imageFile) {
+      // 如果上传了文件，则使用POST请求
+      const formData = new FormData();
+      formData.append('image', imageFile);
+
+      fetch('/api/image', {
+        method: 'POST',
+        body: formData
+      })
+              .then(response => response.json())
+              .then(data => {
+                displayResults(data);
+              })
+              .catch(error => {
+                console.error('Error searching image:', error);
+                document.getElementById('resultsContainer').textContent = '搜索图像时发生错误。';
+              });
+
+    } else if (imageUrl) {
+      // 如果输入了URL，则使用GET请求
+      fetch('/api/image?url=' + encodeURIComponent(imageUrl))
+              .then(response => response.json())
+              .then(data => {
+                displayResults(data);
+              })
+              .catch(error => {
+                console.error('Error searching image:', error);
+                document.getElementById('resultsContainer').textContent = '搜索图像时发生错误。';
+              });
+    } else {
+      // 如果没有输入，提示用户
+      document.getElementById('resultsContainer').textContent = '请输入图像URL或选择一个图像文件。';
+    }
+  });
+
+  // 显示搜索结果
+  function displayResults(data) {
+    // 清空之前的结果
+    const resultsContainer = document.getElementById('resultsContainer');
+    resultsContainer.innerHTML = '';
+
+    // 检查是否有结果
+    if (!data || !Array.isArray(data.results) || data.results.length === 0) {
+      resultsContainer.textContent = '没有找到结果。';
+      return;
+    }
+
+    // 遍历所有结果并创建卡片
+    data.results.forEach(result => {
+      // 检查结果是否有所需的属性
+      if (!result.header || !result.data) {
+        console.error('Result format is incorrect:', result);
+        return;
+      }
+
+      // 创建卡片元素
+      const resultElement = document.createElement('div');
+      resultElement.className = 'card mb-3';
+      resultElement.innerHTML = `
+      <div class="row no-gutters">
+        <div class="col-md-4">
+          <img src="${result.header.thumbnail || ''}" class="card-img" alt="thumbnail">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <h5 class="card-title">${result.data.title || '未知标题'}</h5>
+            <p class="card-text"><small class="text-muted">相似度: ${result.header.similarity || '未知'}%</small></p>
+            <p class="card-text">作者: ${result.data.author_name || '未知作者'}</p>
+            <p class="card-text">
+              <a href="${result.data.ext_urls ? result.data.ext_urls[0] : '#'}" target="_blank">查看原图</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    `;
+      resultsContainer.appendChild(resultElement);
+    });
+  }
+
+</script>
+</body>
+</html>

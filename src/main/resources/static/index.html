@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tool Services</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            background: white;
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        input, button {
+            padding: 10px;
+            width: 80%;
+            margin: 5px 0;
+        }
+        button {
+            background-color: #5cb85c;
+            color: white;
+            border: 0;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>File Download</h2>
+    <div class="form-group">
+        <input type="text" id="fileName" placeholder="Enter file name to download">
+        <button onclick="downloadFile()">Download</button>
+    </div>
+
+    <h2>Plant Recognition</h2>
+    <div class="form-group">
+        <input type="file" id="plantImage">
+        <button onclick="recognizePlant()">Recognize</button>
+    </div>
+</div>
+
+<script>
+    function downloadFile() {
+        var fileName = document.getElementById('fileName').value;
+        window.location.href = '/download/' + fileName;
+    }
+
+    function recognizePlant() {
+        var fileInput = document.getElementById('plantImage');
+        var file = fileInput.files[0];
+
+        var formData = new FormData();
+        formData.append('file', file);
+
+        fetch('/recognizePlant', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.text())
+            .then(data => alert(data))
+            .catch(error => console.error('Error:', error));
+    }
+</script>
+</body>
+</html>

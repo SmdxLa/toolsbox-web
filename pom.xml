@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>ToolBox</artifactId>
+    <packaging>jar</packaging>
+    <version>2.1</version>
+
+    <name>ToolBox</name>
+
+    <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+      <maven.compiler.source>17</maven.compiler.source>
+      <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+
+    <parent>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-parent</artifactId>
+      <version>3.0.5</version>
+    </parent>
+
+
+
+       <dependencies>
+
+         <dependency>
+           <groupId>org.springframework.boot</groupId>
+           <artifactId>spring-boot-starter</artifactId>
+         </dependency>
+
+         <dependency>
+           <groupId>org.springframework.boot</groupId>
+           <artifactId>spring-boot-starter-web</artifactId>
+         </dependency>
+
+         <!-- 测试环境 -->
+         <dependency>
+           <groupId>org.springframework.boot</groupId>
+           <artifactId>spring-boot-starter-test</artifactId>
+         </dependency>
+
+         <dependency>
+           <groupId>org.projectlombok</groupId>
+           <artifactId>lombok</artifactId>
+           <version>1.18.28</version>
+         </dependency>
+
+<!--           类型-->
+           <dependency>
+               <groupId>com.sun.activation</groupId>
+               <artifactId>jakarta.activation</artifactId>
+               <version>1.2.2</version>
+           </dependency>
+
+           <!-- Apache HttpClient -->
+           <dependency>
+               <groupId>org.apache.httpcomponents</groupId>
+               <artifactId>httpclient</artifactId>
+           </dependency>
+
+           <!-- ZXing库用于生成二维码、像素图片 -->
+           <dependency>
+               <groupId>com.google.zxing</groupId>
+               <artifactId>core</artifactId>
+               <version>3.4.1</version>
+           </dependency>
+           <dependency>
+               <groupId>com.google.zxing</groupId>
+               <artifactId>javase</artifactId>
+               <version>3.4.1</version>
+           </dependency>
+
+<!--           文本-->
+           <dependency>
+               <groupId>io.github.java-diff-utils</groupId>
+               <artifactId>java-diff-utils</artifactId>
+               <version>4.9</version>
+           </dependency>
+
+            <!--ip库依赖-->
+           <dependency>
+               <groupId>org.lionsoul</groupId>
+               <artifactId>ip2region</artifactId>
+               <version>2.7.0</version>
+           </dependency>
+
+       </dependencies>
+
+
+    <!--    SpringBoot应用打包插件-->
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+        </plugin>
+      </plugins>
+    </build>
+
+
+</project>
